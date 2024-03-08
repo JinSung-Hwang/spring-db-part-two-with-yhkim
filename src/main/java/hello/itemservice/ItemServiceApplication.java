@@ -18,7 +18,7 @@ public class ItemServiceApplication {
 	}
 
 	@Bean
-	@Profile("local")
+	@Profile("local") // note: springBoot가 이 local profile일때만 이 빈등록이 된다.
 	public TestDataInit testDataInit(ItemRepository itemRepository) {
 		return new TestDataInit(itemRepository);
 	}
