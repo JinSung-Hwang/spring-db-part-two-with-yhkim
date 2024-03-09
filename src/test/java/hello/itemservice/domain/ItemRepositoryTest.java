@@ -19,11 +19,11 @@ class ItemRepositoryTest {
     @Autowired
     ItemRepository itemRepository;
 
-    @AfterEach
+    @AfterEach // note: 테스트들이 서로 영향을 받지 않도록 하기 위해서 각 테스트가 끝날 때마다 저장소를 비워준다.
     void afterEach() {
         //MemoryItemRepository 의 경우 제한적으로 사용
         if (itemRepository instanceof MemoryItemRepository) {
-            ((MemoryItemRepository) itemRepository).clearStore();
+            ((MemoryItemRepository) itemRepository).clearStore(); // note: DB데이터를 지우는 clearStore() 메서드는 인터페이스에는 없고 MemoryItemRepository에만 존재한다. 왜냐하면 다른 버전은 @Tracsantional로 롤백을 할거이기 때문이다.
         }
     }
 
