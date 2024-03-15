@@ -49,7 +49,8 @@ public class JdbcTemplateItemRepositoryV2 implements ItemRepository {
   public Item save(Item item) {
     String sql = "insert into item(item_name, price, quantity) values(:itemName, :price, :quantity)";
 
-    BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(item);
+    BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(item); // note: 이 방법을 사용하면 객체만 넣으면 SQL에 넣을 파라미터로 변환해주기때문에 가장 편하다.
+    // note: 하지만 update메서드의 SQL처럼 객체 파라미터와 ID가 분리되어있는 경우에는 사용할 수 없어서 MapSqlParameterSource이나 Map을 사용해야한다.
 
     KeyHolder keyHolder = new GeneratedKeyHolder();
     template.update(sql, param, keyHolder);
@@ -74,7 +75,8 @@ public class JdbcTemplateItemRepositoryV2 implements ItemRepository {
 
   @Override
   public Optional<Item> findById(Long id) {
-    String sql = "select id, item_name, price, quantity from item where id = :id";
+    String sql = "select id, item_name, price, quantity from item where id = :id"; // note: DB는 snake_case로 되어있어도 자바는 camelCase를 사용하는데 이때 as를 이용해서 convention을 변환할 수 있다.
+    // note: 하지만 BeanPropertyRowMapper를 사용하면 자동으로 변환해준다.
     try {
       Map<String, Object> param = Map.of("id", id);
       Item item = template.queryForObject(sql, param, itemRowMapper());
@@ -85,7 +87,7 @@ public class JdbcTemplateItemRepositoryV2 implements ItemRepository {
   }
 
   private RowMapper<Item> itemRowMapper() {
-    return BeanPropertyRowMapper.newInstance(Item.class); // camelCase 변환을 지원한다.
+    return BeanPropertyRowMapper.newInstance(Item.class); // note: camelCase 변환을 지원한다.
   }
 
   @Override
