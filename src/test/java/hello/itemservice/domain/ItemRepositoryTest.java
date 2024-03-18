@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest // note: @SpringBootApplication 애노테이션을 찾는다. 그리고 거기에 설정되어있는대로 빈등록등을 진행하여 스프링부트를 띄운다.
 class ItemRepositoryTest {
 
     @Autowired
