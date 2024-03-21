@@ -11,27 +11,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional // note: @Transactional이 테스트코드에서 사용되면 테스트가 끝나면 커밋하지않고 롤백을 한다.
 @SpringBootTest // note: @SpringBootApplication 애노테이션을 찾는다. 그리고 거기에 설정되어있는대로 빈등록등을 진행하여 스프링부트를 띄운다.
 class ItemRepositoryTest {
 
     @Autowired
     ItemRepository itemRepository;
 
-    @Autowired
-    PlatformTransactionManager transactionManager;
-    TransactionStatus status;
+//    @Autowired
+//    PlatformTransactionManager transactionManager;
+//    TransactionStatus status;
 
-    @BeforeEach
-    void beforeEach() {
-        // note: 트랜잭션 시작
-        status = transactionManager.getTransaction(new DefaultTransactionDefinition());
-    }
+//    @BeforeEach
+//    void beforeEach() {
+//        // note: 트랜잭션 시작
+//        status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+//    }
 
     @AfterEach // note: 테스트들이 서로 영향을 받지 않도록 하기 위해서 각 테스트가 끝날 때마다 저장소를 비워준다.
     void afterEach() {
@@ -41,9 +45,13 @@ class ItemRepositoryTest {
         }
 
         // note: 트랜잭션 종료
-        transactionManager.rollback(status);
+//        transactionManager.rollback(status);
     }
 
+    // note: @transactional을 사용할때 실제 DB에 반영되는지 확인하기 위해서는 @Commit이나 @Rollback(false)를 사용하면 DB에 값이 들어가는지 확인할 수 있다.
+//    @Commit
+//    @Rollback(false)
+//    @Transactional
     @Test
     void save() {
         //given
